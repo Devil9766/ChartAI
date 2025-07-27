@@ -1,0 +1,138 @@
+
+.login-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #0d1117;
+    padding: 40px;
+    flex-wrap: wrap;
+}
+
+.login-img  {
+    max-width: 500px;
+    width: 100%;
+    
+
+}
+
+.loginForm {
+    background-color: #161b22;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
+    max-width: 500px;
+    min-height: 500px;
+    width: 100%;
+    color: #ffffff;
+}
+
+.loginForm h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #58a6ff;
+}
+
+.loginInputs label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+    color: #c9d1d9;
+}
+
+.loginInputs input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background-color: #0d1117;
+    color: #ffffff;
+    font-size: 1rem;
+    border: 1px solid #30363d;
+    transition: border-color 0.3s;
+}
+
+.loginInputs input:focus {
+    border-color: #58a6ff;
+}
+.show-password{
+    display: flex;
+    align-items: center;
+    height: 3rem;
+    position: relative;
+}
+.show-password input{
+    height: 100%;
+    flex: 1;
+    
+}
+.show-password > span{
+    background-color: white;
+    /* Match parent height */
+    border-radius: 0 8px 8px 0;
+    height: 100%;
+    position: absolute;
+    
+    bottom: 0;
+    right: 0;
+    
+}
+.show-password > span > img {
+    
+    height: 100%;
+}
+
+.loginInputs button {
+    margin-top: 30px;
+    width: 100%;
+    padding: 12px;
+    background-color: #238636;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.loginInputs button:hover {
+    background-color: #2ea043;
+}
+.loginForm p {
+    color: #8b949e;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.loginInputs span {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+
+
+/* Responsive for smaller devices */
+@media (max-width: 1100px) {
+    .login-section {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .login-img img {
+        max-width: 500px;
+    }
+    .loginForm {
+    
+    
+    max-width: 500px;
+    
+    
+}
+}

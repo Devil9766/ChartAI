@@ -1,0 +1,23 @@
+:root {
+  --main-bg-color: #1F6FEB;
+  --accent-color: #94F9B2;
+  --font-style-inter :  "Inter", sans-serif;
+  --font-style-montserrat : "Montserrat", sans-serif;
+  
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-style: var(--font-style-montserrat) ;
+    font-weight: 600;
+    scroll-behavior: smooth;
+    /* outline: 1px white solid; */
+}
+#root{
+  background-color: #0d1117;
+}
+a{
+  text-decoration: none;
+}
