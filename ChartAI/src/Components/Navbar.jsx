@@ -45,7 +45,7 @@ export default function Navbar(){
             </div>
             <div className="navOptions">
                 <Link className="link" to="/" >Home</Link>
-                <Link className="link" to="/pricing" >Pricing</Link>
+                {/* <Link className="link" to="/pricing" >Pricing</Link> */}
                 <Link className="link" to="/docs" >Docs</Link>
                 {userRole === "admin" && <Link className="link" to="/admin-dashboard" >Admin Dashboard</Link>}
                 {userRole === "user" && <Link className="link" to="/user-dashboard" >User Dashboard</Link>}

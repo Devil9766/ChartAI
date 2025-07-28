@@ -7,6 +7,7 @@ import Login from './Components/Login'
 import ScrollToTop from './Components/ScrollToTop';
 import SignUp from './Components/Signup';
 import UserDashboard from './Components/UserDashboard'
+import ViewChart from './Components/ViewCharts'
 
 
 
@@ -23,6 +24,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/user-dashboard' element={<UserDashboard />} />
+          <Route path='/view-charts' element={<ViewChart />} />
         </Routes>
       </ScrollToTop>
       <Footer />

@@ -9,6 +9,13 @@ h1{
     font-size: 2.5rem;
     margin-bottom: 30px;
 }
+.file-grid-container{
+    padding: 1em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit , minmax(280px, 1fr));
+    gap: 2em;
+    
+}
 .upload-section{
     background-color: #161b22;
     padding: 30px;

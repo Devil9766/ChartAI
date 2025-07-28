@@ -7,9 +7,11 @@ import bcrypt from "bcrypt";
 import VerifyToken from "./Middleware/VerifyToken.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import uploadRoute from "./Routes/uploadRoute.js";
+import db from "./db.js";
+import fileHistoryRoute from "./Routes/fileHistoryRoute.js"
 
-
-const PORT = 3000;
+const PORT = process.env.PORT;
 const app = express();
 const saltRound = 10;
 
@@ -23,21 +25,7 @@ app.use(express.json())
 app.use(cookieParser());
 dotenv.config();
 
-let db;
-(async () => {
-    try {
-        db = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
-        });
-        console.log("Database connected successfully.");
-    } catch (err) {
-        console.error("Database connection failed:", err);
-    }
-})();
+
 
 app.post("/signUp" , async (req , res)=>{ 
     const {name , email , password} = req.body;
@@ -75,7 +63,7 @@ app.post("/login" , async (req , res)=>{
         return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email, role : user.role , name : user.name}, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.user_id, email: user.email, role : user.role , name : user.name}, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
     res.cookie("token" , token , {
@@ -97,6 +85,10 @@ app.get("/profile", VerifyToken, (req, res) => {
         name: req.user.name
     });
 });
+
+app.use("/api" , uploadRoute)
+
+app.use("/api" , fileHistoryRoute);
 
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {

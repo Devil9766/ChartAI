@@ -1,0 +1,19 @@
+.file-history{
+    border: 2px #89f333 dashed;
+    padding: 2em;
+    max-width: 700px;
+    box-shadow: 0 0 10px 3px black;
+
+}
+.file-item{
+    background-color: #161b22 ;
+    padding: 1em;
+}
+.clickable {
+    cursor: pointer;
+    color: #007bff;
+}
+
+.clickable:hover {
+    text-decoration: underline;
+}
