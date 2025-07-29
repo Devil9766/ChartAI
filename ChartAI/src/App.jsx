@@ -24,7 +24,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/user-dashboard' element={<UserDashboard />} />
-          <Route path='/view-charts' element={<ViewChart />} />
+          <Route path='/visualize/:id' element={<ViewChart />} />
         </Routes>
       </ScrollToTop>
       <Footer />

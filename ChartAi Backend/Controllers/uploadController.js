@@ -36,7 +36,7 @@ export const handleExcelUpload = async (req, res) => {
       );
     }
 
-    return res.status(200).json({ message: "Excel file parsed and saved successfully." });
+    return res.status(200).json({fileId: fileId, message: "Excel file parsed and saved successfully." });
   } catch (error) {
     console.error("Upload error:", error);
     return res.status(500).json({ message: "Internal server error while uploading file." });

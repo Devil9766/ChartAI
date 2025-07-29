@@ -50,7 +50,7 @@ export default function Navbar(){
                 {userRole === "admin" && <Link className="link" to="/admin-dashboard" >Admin Dashboard</Link>}
                 {userRole === "user" && <Link className="link" to="/user-dashboard" >User Dashboard</Link>}
                 { userLoggedIn ? 
-                    (<button className="logout" onClick={handleLogout}>Logout</button>)
+                    (<button className="logout link" onClick={handleLogout}>Logout</button>)
                 :
                     (<Link className="link span" to="/login" >Get Started</Link>)
                     }

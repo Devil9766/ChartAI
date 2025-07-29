@@ -2,19 +2,19 @@
     padding: 100px 80px;
     background-color: #0d1117;
     color: white;
-    min-height: 80vh;
+
 }
 
-h1{
+.user-dashboard h1{
     font-size: 2.5rem;
     margin-bottom: 30px;
+    padding: 0.5em;
 }
 .file-grid-container{
     padding: 1em;
     display: grid;
     grid-template-columns: repeat(auto-fit , minmax(280px, 1fr));
     gap: 2em;
-    
 }
 .upload-section{
     background-color: #161b22;
@@ -23,6 +23,7 @@ h1{
     flex-direction: column;
     gap: 10px;
     box-shadow: 0 0 10px 3px black;
+    max-height: fit-content;
     max-width: 600px;
     
 }

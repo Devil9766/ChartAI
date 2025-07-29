@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./FileHistory.css";
 
 export default function FileHistory(props){
-    const [fileHistory , setFileHistory] = useState({});
+    const [fileHistory , setFileHistory] = useState([]);
     const [loading , setLoading] = useState(true);
     const [error , setError] = useState("");
     const nav = useNavigate();
@@ -39,8 +39,9 @@ export default function FileHistory(props){
     return(
         <section className="file-history">
             <h2>Your Recently Uploaded Files :</h2>
-            <ul className="file-history-list">
-                {
+            <div className="file-history-list">
+                <ul>
+                    {
                     fileHistory.map((file , index) =>(
                         <li key={index} className="file-item" onClick={()=>handleFileClick(file.file_id)}>
                             <strong className="clickable">{file.filename}</strong> <br />
@@ -48,7 +49,8 @@ export default function FileHistory(props){
                         </li>
                     ))
                 }
-            </ul>
+                </ul>                
+            </div>
         </section>
     );
 }

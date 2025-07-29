@@ -41,7 +41,7 @@ export default function UserDashboard(){
                 }
             });
             alert("File uploaded successfully");
-            nav("/view-charts")
+            nav(`visualize/${res.data.fileID}`);
         } catch (error) {
             if(error.response?.data?.message){
                 setError(error.response.data.message)
@@ -54,16 +54,16 @@ export default function UserDashboard(){
             <h1>Welcome Back {user} 👋</h1>
             <div className="file-grid-container">
                 <div className="upload-section">
-                <h5 className="upload-label">Upload an Excel or CSV file analyze</h5>
-                <div className="inputFileName">
-                    <label htmlFor="file-upload" className="custom-file-upload">Select File</label>
-                    <input type="file" id="file-upload" onChange={handleFileChange} />
-                    {dataFile && <p className="file-name">Selected file: {dataFile.name}</p>}
+                    <h5 className="upload-label">Upload an Excel or CSV file analyze</h5>
+                    <div className="inputFileName">
+                        <label htmlFor="file-upload" className="custom-file-upload">Select File</label>
+                        <input type="file" id="file-upload" onChange={handleFileChange} />
+                        {dataFile && <p className="file-name">Selected file: {dataFile.name}</p>}
+                    </div>
+                    <button onClick={handleUpload} className="upload-btn">Upload</button>
+                    <span style={{color : "red"}}>{error}</span>
                 </div>
-                <button onClick={handleUpload} className="upload-btn">Upload</button>
-                <span style={{color : "red"}}>{error}</span>
-            </div>
-            <FileHistory />
+                <FileHistory />
             </div>
         </div>
     )

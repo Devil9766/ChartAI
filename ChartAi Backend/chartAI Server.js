@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import uploadRoute from "./Routes/uploadRoute.js";
 import db from "./db.js";
 import fileHistoryRoute from "./Routes/fileHistoryRoute.js"
+import sheetRoute from "./Routes/SheetRoute.js"; 
 
 const PORT = process.env.PORT;
 const app = express();
@@ -89,6 +90,8 @@ app.get("/profile", VerifyToken, (req, res) => {
 app.use("/api" , uploadRoute)
 
 app.use("/api" , fileHistoryRoute);
+
+app.use("/api" , sheetRoute);
 
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {
