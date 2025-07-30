@@ -64,8 +64,8 @@ export default function ViewChart() {
 
         if (!chart) return;
 
-        const originalCanvas = chart.canvas;  // Chart.js v4
-        const scale = 3;  // increase scale for higher quality
+        const originalCanvas = chart.canvas;  
+        const scale = 3;  
 
         const canvas = document.createElement("canvas");
         canvas.width = originalCanvas.width * scale;
@@ -73,23 +73,18 @@ export default function ViewChart() {
 
         const context = canvas.getContext("2d");
 
-        // Ensure sharp text rendering
         context.setTransform(scale, 0, 0, scale, 0, 0);
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = "high";
 
-        // Draw the original chart at higher resolution
         context.drawImage(originalCanvas, 0, 0);
 
-        // Convert to data URL and trigger download
         const url = canvas.toDataURL("image/png", 1.0);
         const link = document.createElement("a");
         link.href = url;
         link.download = `${chartType || "chart"}-highres.png`;
         link.click();
     };
-
-
 
     const handlesheetdata = (item) => {
         const headers = item.columns.split(",").map(h => h.trim());
@@ -103,12 +98,12 @@ export default function ViewChart() {
             console.error("Invalid JSON in data_json:", err);
         }
 
-        console.log("Parsed data after selection:", parsed);
-
         setSheetHeaders(headers);
         setSheetData({ ...item, data_json: parsed });
+        setXAxis(" ");
+        setYAxis(" ");
+        setChartType(" ");
 
-        
     };
 
    const parsedData = Array.isArray(sheetData?.data_json) ? sheetData.data_json.filter(
@@ -116,30 +111,10 @@ export default function ViewChart() {
         )
     : [];
 
-    const isValidKey = (key) =>
-    key &&
-    parsedData.length > 0 &&
-    parsedData.every(item => 
-        typeof item === "object" &&
-        item !== null &&
-        Object.prototype.hasOwnProperty.call(item, key) &&
-        item[key] !== null &&
-        item[key] !== undefined
-    );
-
     const canRenderChart =
     parsedData.length > 0 &&
-    xAxis && yAxis &&
-    isValidKey(xAxis) &&
-    isValidKey(yAxis);
+    xAxis && yAxis ;
 
-    console.log("Parsed data:", parsedData);
-    console.log("xAxis:", xAxis);
-    console.log("yAxis:", yAxis);
-    console.log("isValidKey(xAxis):", isValidKey(xAxis));
-    console.log("isValidKey(yAxis):", isValidKey(yAxis));
-    console.log("canRenderChart:", canRenderChart);
-   
     if (loading) return <p className="visualize-container">Loading file history...</p>;
     if (error) return <p className="visualize-container error">{error}</p>;
     if (!sheetList || sheetList.length === 0) return <p className="visualize-container">No uploaded sheets found</p>;
