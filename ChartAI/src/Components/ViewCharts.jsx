@@ -4,31 +4,37 @@ import { useParams } from "react-router-dom";
 import api from "./api";
 import {
   Chart as ChartJS,
-  BarElement,
-  LineElement,
-  ArcElement,
   CategoryScale,
   LinearScale,
+  BarElement,
+  LineElement,
   PointElement,
+  ArcElement,
+  RadialLinearScale,
+  Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 } from 'chart.js';
-import { Bar, Line, Pie } from 'react-chartjs-2';
+import {Bar,Line,Pie,Doughnut,Radar,PolarArea,Bubble,Scatter} from 'react-chartjs-2';
+
 ChartJS.register(
-  BarElement,
-  LineElement,
-  ArcElement,
   CategoryScale,
   LinearScale,
+  BarElement,
+  LineElement,
   PointElement,
+  ArcElement,
+  RadialLinearScale,
+  Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
-
 
 export default function ViewChart() {
     const {id} = useParams();
-
+    const [chartError , setChartError] = useState("");
     const chartRef = useRef(null);
     const [xAxis , setXAxis] = useState("");
     const [yAxis , setYAxis] = useState("");
@@ -44,6 +50,7 @@ export default function ViewChart() {
         const getSheetList = async () => {
         try {
             const res = await api.get("/api/sheets?file_id="+id);
+            console.log(res.data);
             setSheetList(res.data);
         } catch (err) {
             if (err.response?.data?.message) {
@@ -62,7 +69,7 @@ export default function ViewChart() {
     const downloadChart = () => {
         const chart = chartRef.current;
 
-        if (!chart) return;
+        if (!chart){ setChartError("Select a chart first") ; return};
 
         const originalCanvas = chart.canvas;  
         const scale = 3;  
@@ -84,6 +91,7 @@ export default function ViewChart() {
         link.href = url;
         link.download = `${chartType || "chart"}-highres.png`;
         link.click();
+        setChartError("");
     };
 
     const handlesheetdata = (item) => {
@@ -162,72 +170,162 @@ export default function ViewChart() {
                         <div className="chart-types">
                             <p><strong>Chart type:</strong></p>
                             <select value={chartType} onChange={(e) => setChartType(e.target.value)}>
-                                <option value="">Select</option>
+                                <option value="">Select Chart Type</option>
                                 <option value="bar">Bar Chart</option>
                                 <option value="line">Line Chart</option>
                                 <option value="pie">Pie Chart</option>
+                                <option value="doughnut">Doughnut Chart</option>
+                                <option value="radar">Radar Chart</option>
+                                <option value="polarArea">Polar Area Chart</option>
+                                <option value="bubble">Bubble Chart</option>
+                                <option value="scatter">Scatter Chart</option>
                             </select>
                         </div>
                     </div>
                     <div className="charts-area">
                         {canRenderChart ? (
                         <>
-                        {chartType === "bar" && (
+                            {chartType === "bar" && (
                             <Bar
-                            ref={chartRef}
-                            data={{
+                                ref={chartRef}
+                                data={{
                                 labels: parsedData.map(d => d[xAxis]),
                                 datasets: [{
-                                label: yAxis,
-                                data: parsedData.map(d => d[yAxis]),
-                                backgroundColor: "rgba(75,192,192,0.6)",
+                                    label: yAxis,
+                                    data: parsedData.map(d => d[yAxis]),
+                                    backgroundColor: "rgba(75,192,192,0.6)",
                                 }]
-                            }}
-                            options={{ responsive: true }}
+                                }}
+                                options={{ responsive: true }}
                             />
-                        )}
+                            )}
 
-                        {chartType === "line" && (
+                            {chartType === "line" && (
                             <Line
-                            ref={chartRef}
-                            data={{
+                                ref={chartRef}
+                                data={{
                                 labels: parsedData.map(d => d[xAxis]),
                                 datasets: [{
-                                label: yAxis,
-                                data: parsedData.map(d => d[yAxis]),
-                                fill: false,
-                                borderColor: "rgba(75,192,192,1)"
+                                    label: yAxis,
+                                    data: parsedData.map(d => d[yAxis]),
+                                    fill: false,
+                                    borderColor: "rgba(75,192,192,1)"
                                 }]
-                            }}
-                            options={{ responsive: true }}
+                                }}
+                                options={{ responsive: true }}
                             />
-                        )}
+                            )}
 
-                        {chartType === "pie" && (
+                            {chartType === "pie" && (
                             <Pie
-                            ref={chartRef}
-                            data={{
+                                ref={chartRef}
+                                data={{
                                 labels: parsedData.map(d => d[xAxis]),
                                 datasets: [{
-                                data: parsedData.map(d => d[yAxis]),
-                                backgroundColor: [
+                                    data: parsedData.map(d => d[yAxis]),
+                                    backgroundColor: [
                                     "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"
-                                ]
+                                    ]
                                 }]
-                            }}
-                            options={{ responsive: true }}
+                                }}
+                                options={{ responsive: true }}
                             />
-                        )}
-                        {canRenderChart && (
-                        <button onClick={downloadChart} className="download-btn">
-                            ⬇️ Download Chart
-                        </button>
-                        )}
+                            )}
+
+                            {chartType === "doughnut" && (
+                            <Doughnut
+                                ref={chartRef}
+                                data={{
+                                labels: parsedData.map(d => d[xAxis]),
+                                datasets: [{
+                                    data: parsedData.map(d => d[yAxis]),
+                                    backgroundColor: [
+                                    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"
+                                    ]
+                                }]
+                                }}
+                                options={{ responsive: true }}
+                            />
+                            )}
+
+                            {chartType === "radar" && (
+                            <Radar
+                                ref={chartRef}
+                                data={{
+                                labels: parsedData.map(d => d[xAxis]),
+                                datasets: [{
+                                    label: yAxis,
+                                    data: parsedData.map(d => d[yAxis]),
+                                    backgroundColor: "rgba(75,192,192,0.2)",
+                                    borderColor: "rgba(75,192,192,1)"
+                                }]
+                                }}
+                                options={{ responsive: true }}
+                            />
+                            )}
+
+                            {chartType === "polarArea" && (
+                            <PolarArea
+                                ref={chartRef}
+                                data={{
+                                labels: parsedData.map(d => d[xAxis]),
+                                datasets: [{
+                                    data: parsedData.map(d => d[yAxis]),
+                                    backgroundColor: [
+                                    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"
+                                    ]
+                                }]
+                                }}
+                                options={{ responsive: true }}
+                            />
+                            )}
+
+                            {chartType === "bubble" && (
+                            <Bubble
+                                ref={chartRef}
+                                data={{
+                                datasets: [{
+                                    label: yAxis,
+                                    data: parsedData.map(d => ({
+                                    x: d[xAxis],
+                                    y: d[yAxis],
+                                    r: Math.random() * 10 + 5  // use real value if available
+                                    })),
+                                    backgroundColor: "rgba(54, 162, 235, 0.5)"
+                                }]
+                                }}
+                                options={{ responsive: true }}
+                            />
+                            )}
+
+                            {chartType === "scatter" && (
+                            <Scatter
+                                ref={chartRef}
+                                data={{
+                                datasets: [{
+                                    label: yAxis,
+                                    data: parsedData.map(d => ({
+                                    x: d[xAxis],
+                                    y: d[yAxis]
+                                    })),
+                                    backgroundColor: "rgba(255, 99, 132, 0.5)"
+                                }]
+                                }}
+                                options={{ responsive: true }}
+                            />
+                            )}
+                            {canRenderChart && (
+                            <button onClick={downloadChart} className="download-btn">
+                                ⬇️ Download Chart
+                            </button>
+                            
+                            )}
                         </>
                         ) : <p>Please select valid X and Y axis with matching numeric data.</p>}
+                        <br />
+                        <span style={{color : "red"}}>{chartError}</span>
                     </div>
                 </div>
-
             </div>
         </div>
     );
