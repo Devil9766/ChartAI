@@ -41,7 +41,7 @@ export default function UserDashboard(){
                 }
             });
             alert("File uploaded successfully");
-            nav(`visualize/${res.data.fileID}`);
+            nav(`/visualize/${res.data.fileId}`);
         } catch (error) {
             if(error.response?.data?.message){
                 setError(error.response.data.message)

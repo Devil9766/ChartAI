@@ -27,7 +27,6 @@ export default function Login(){
             }else if(role === "user"){
                 nav("/user-dashboard");
             } 
-            console.log(role);
             } catch (error) {
             nav("/login");
         } 

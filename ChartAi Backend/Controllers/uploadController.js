@@ -14,8 +14,22 @@ export const handleExcelUpload = async (req, res) => {
     const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
     const userId = req.user.id;
     const filename = req.file.originalname;
+    const normalizeData = (dataArray) => {
+      return dataArray.map((item) => {
+        const cleanedItem = {};
+        for (let key in item) {
+          if (Object.hasOwnProperty.call(item, key)) {
+            const trimmedKey = key.trim();
+            const value = item[key];
 
-    
+            // Optional: If the value is a string, trim it too
+            cleanedItem[trimmedKey] = typeof value === 'string' ? value.trim() : value;
+          }
+        }
+        return cleanedItem;
+      });
+    };
+
 
     const [result] = await db.execute(
       "INSERT INTO UploadedFiles (user_id, filename, filepath) VALUES (?, ?, ?)",
@@ -27,12 +41,13 @@ export const handleExcelUpload = async (req, res) => {
       const sheet = workbook.Sheets[sheetName];
       const jsonData = xlsx.utils.sheet_to_json(sheet, { defval: null });
       if (jsonData.length === 0) continue;
-        
-      const columnNames = Object.keys(jsonData[0]).join(", ");
+      
+      const normalizedData = normalizeData(jsonData);
+      const columnNames = Object.keys(normalizedData[0]).join(", ");
 
       await db.execute(
         "INSERT INTO ExtractedData (file_id, sheet_name, data_json, columns) VALUES (?, ?, ?, ?)",
-        [fileId, sheetName, JSON.stringify(jsonData), columnNames]
+        [fileId, sheetName, JSON.stringify(normalizedData), columnNames]
       );
     }
 

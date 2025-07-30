@@ -54,6 +54,7 @@ background-color: #2b2c2c ;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    gap: 20px;
     padding: 0.5em;
     border-bottom: 0.5px white solid;
 }
@@ -74,6 +75,20 @@ background-color: #2b2c2c ;
 .axis label{
     margin: 5px;
 }
+.download-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.download-btn:hover {
+  background-color: #0056b3;
+}
+
 
 
 
