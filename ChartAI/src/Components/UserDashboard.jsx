@@ -3,9 +3,12 @@ import "./UserDashboard.css";
 import api from "./api";
 import { useNavigate } from "react-router-dom";
 import FileHistory from "./FileHistory";
+
 export default function UserDashboard(){
-    const [dataFile , setDataFile] = useState();
+
     const nav = useNavigate();
+    const [stats , setStats] = useState({});
+    const [dataFile , setDataFile] = useState();
     const [ user ,  setUser] = useState();
     const [error , setError] = useState();
     useEffect(()=>{
@@ -17,8 +20,18 @@ export default function UserDashboard(){
             console.log("Error while fetching User" , error);
         }
         } 
-        
+
+       const getStats = async()=>{ 
+        try {
+            const stats = await api.get("/stats");
+            setStats(stats.data)
+        } catch (error) {
+            setError("error while getting stats")
+        }
+        }
+        getStats();
         getName();
+        
     } , []);
 
     const handleFileChange = (e)=>{
@@ -54,14 +67,28 @@ export default function UserDashboard(){
             <h1>Welcome Back {user} 👋</h1>
             <div className="file-grid-container">
                 <div className="upload-section">
-                    <h5 className="upload-label">Upload an Excel or CSV file analyze</h5>
-                    <div className="inputFileName">
-                        <label htmlFor="file-upload" className="custom-file-upload">Select File</label>
-                        <input type="file" id="file-upload" onChange={handleFileChange} />
-                        {dataFile && <p className="file-name">Selected file: {dataFile.name}</p>}
+                    <div className="file-upload-section">
+                        <h5 className="upload-label">Upload an Excel or CSV file analyze</h5>
+                        <div className="inputFileName">
+                            <label htmlFor="file-upload" className="custom-file-upload">Select File</label>
+                            <input type="file" id="file-upload" onChange={handleFileChange} />
+                            {dataFile && <p className="file-name">Selected file: {dataFile.name}</p>}
+                        </div>
+                        <button onClick={handleUpload} className="upload-btn">Upload</button>
+                        <span style={{color : "red"}}>{error}</span>
                     </div>
-                    <button onClick={handleUpload} className="upload-btn">Upload</button>
-                    <span style={{color : "red"}}>{error}</span>
+                    <div className="file-widgets">
+                        <div className="count-block">
+                            <p>Total Files : </p>
+                            <hr />
+                            <p className="count">  {stats.file_count}</p>
+                        </div>
+                        <div className="count-block">
+                            <p>Total Sheets : </p>
+                            <hr />
+                            <p className="count">  {stats.sheet_count}</p>
+                        </div>
+                    </div>
                 </div>
                 <FileHistory />
             </div>

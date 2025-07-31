@@ -50,7 +50,6 @@ export default function ViewChart() {
         const getSheetList = async () => {
         try {
             const res = await api.get("/api/sheets?file_id="+id);
-            console.log(res.data);
             setSheetList(res.data);
         } catch (err) {
             if (err.response?.data?.message) {

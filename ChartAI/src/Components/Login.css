@@ -7,24 +7,24 @@
     background-color: #0d1117;
     padding: 40px;
     flex-wrap: wrap;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.26);
 }
 
 .login-img  {
     max-width: 500px;
     width: 100%;
-    
-
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.26);
 }
 
 .loginForm {
     background-color: #161b22;
     padding: 40px 30px;
     border-radius: 16px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
     max-width: 500px;
     min-height: 500px;
     width: 100%;
     color: #ffffff;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.26);
 }
 
 .loginForm h1 {
