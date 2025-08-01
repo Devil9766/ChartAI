@@ -80,13 +80,19 @@ export default function UserDashboard(){
                     <div className="file-widgets">
                         <div className="count-block">
                             <p>Total Files : </p>
-                            <hr />
                             <p className="count">  {stats.file_count}</p>
                         </div>
                         <div className="count-block">
                             <p>Total Sheets : </p>
-                            <hr />
                             <p className="count">  {stats.sheet_count}</p>
+                        </div>
+                        <div className="count-block">
+                            <p>Total Insights : </p>
+                            <p className="count">  {stats.total_insights}</p>
+                        </div>
+                        <div className="count-block">
+                            <p>Saved Visuals: </p>
+                            <p className="count">  {stats.visualization_saved_count}</p>
                         </div>
                     </div>
                 </div>

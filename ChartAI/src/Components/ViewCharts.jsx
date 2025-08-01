@@ -1,6 +1,7 @@
 import React, { useEffect, useState , useRef } from "react";
 import "./ViewChart.css";
 import { useParams } from "react-router-dom";
+import GetInsights from "./GetInsights";
 import api from "./api";
 import {
   Chart as ChartJS,
@@ -44,6 +45,7 @@ export default function ViewChart() {
     const [sheetList, setSheetList] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [showInsights, setShowInsights] = useState(false);
 
 
     useEffect(() => {
@@ -326,6 +328,24 @@ export default function ViewChart() {
                     </div>
                 </div>
             </div>
+            {canRenderChart && !showInsights && (
+            <button className="insight-btn" style={{visibility : !showInsights ? "visible" : "hidden"}} onClick={() => setShowInsights(true)}>
+                🤖 Generate Insights
+            </button>
+            )}
+
+            {showInsights && (
+            <GetInsights
+                sheetData={sheetData}
+                chartConfig={{
+                chartType,
+                xAxis,
+                yAxis,
+                data: parsedData
+                }}
+                onClose={() => setShowInsights(false)}
+            />
+            )}
         </div>
     );
     }

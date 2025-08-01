@@ -80,27 +80,31 @@ input[type = "file"]{
 .file-widgets{
     padding: 0.5em;
     text-align: center;
-    display: grid;
-    grid-template-columns: repeat(auto-fit , minmax(250px , 1fr));
-    justify-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
     gap: 20px;
 }
 .count-block{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    align-items: center;
     padding: 0.7em;
-    background-color: #4a0df1cb;
+    background: linear-gradient(145deg, #5f25ff, #370cc1);
     border-radius: 5px;
-    width: 120px;
-    transition: all 0.3s ease
+    width: 130px;
+    height: 130px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
 }
 
 .count-block:hover{
     border: 1px solid #238636;
     transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
-
 .count{
     font-size: 3em;
     font-weight: bold;

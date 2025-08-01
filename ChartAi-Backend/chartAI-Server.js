@@ -11,7 +11,7 @@ import uploadRoute from "./Routes/uploadRoute.js";
 import db from "./db.js";
 import fileHistoryRoute from "./Routes/fileHistoryRoute.js"
 import sheetRoute from "./Routes/SheetRoute.js"; 
-
+import InsightRoute from "./Routes/InsightRoute.js"
 const PORT = process.env.PORT;
 const app = express();
 const saltRound = 10;
@@ -87,11 +87,77 @@ app.get("/profile", VerifyToken, (req, res) => {
     });
 });
 
+app.get('/stats', VerifyToken, async (req, res) => {
+    const userId = req.user.id;
+
+    const [rows] = await db.execute(`
+        SELECT 
+            (SELECT COUNT(*) FROM UploadedFiles WHERE user_id = ?) AS file_count,
+            (SELECT COUNT(*) 
+             FROM ExtractedData ed 
+             JOIN UploadedFiles uf ON ed.file_id = uf.file_id 
+             WHERE uf.user_id = ?) AS sheet_count,
+            (SELECT COUNT(*) FROM AnalysisReports WHERE user_id = ?) AS total_insights,
+            (SELECT COUNT(*) 
+             FROM visualizations vs
+             JOIN analysisreports ar ON ar.report_id = vs.report_id 
+             WHERE ar.user_id = ?) AS visualization_saved_count
+    `, [userId, userId, userId, userId]);
+
+    res.json(rows[0]);
+});
+
+
 app.use("/api" , uploadRoute)
 
 app.use("/api" , fileHistoryRoute);
 
 app.use("/api" , sheetRoute);
+
+app.use("/api" , InsightRoute);
+
+
+export const generateInsight = async (dataJson) => {
+  const prompt = `You are a data analyst. Given this JSON array, summarize key insights:\n\n${JSON.stringify(dataJson, null, 2)}\n\nWhat trends or patterns do you see?`;
+
+  try {
+    const response = await cohere.generate({
+      model: "command-r-plus",
+      prompt: prompt,
+      max_tokens: 300,
+      temperature: 0.5
+    });
+
+    return response.body.generations[0].text;
+  } catch (error) {
+    console.error("Cohere Insight Error:", error);
+    return "Insight generation failed.";
+  }
+};
+
+app.post("/save-report", VerifyToken, async (req, res) => {
+  const { data_id, title, summary, report_json } = req.body;
+  const user_id = req.user.id;
+
+  const [result] = await db.query(`
+    INSERT INTO AnalysisReports (data_id, user_id, title, summary, report_json)
+    VALUES (?, ?, ?, ?, ?)
+  `, [data_id, user_id, title, summary, JSON.stringify(report_json)]);
+
+  res.json({ message: "Insight saved", report_id: result.insertId });
+});
+
+app.post("/save-viz", VerifyToken, async (req, res) => {
+  const { report_id, type, config_json, title } = req.body;
+
+  await db.query(`
+    INSERT INTO Visualizations (report_id, type, config_json, title)
+    VALUES (?, ?, ?, ?)
+  `, [report_id, type, JSON.stringify(config_json), title]);
+
+  res.json({ message: "Visualization saved" });
+});
+
 
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {

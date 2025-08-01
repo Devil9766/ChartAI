@@ -2,7 +2,10 @@
    padding: 50px 80px;
     background-color: #0d1117;
     min-height: 100vh;
-    color: white;  
+    color: white; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
 }
 .visualize-container h1{
     padding: 0.5em;
@@ -180,6 +183,20 @@ background-color: #2b2c2c ;
   background-color: #0056b3;
 }
 
+.insight-btn{
+  background: none;
+  text-decoration: none;
+  padding: 2em;
+  color: white;
+  font-size: 1.3em;
+  border: 2px white solid;
+  transition: all linear 300mx ease-in-out;
+  cursor: pointer;
+}
+
+.insight-btn:hover{
+  background-color: #141414;
+}
 
 
 
