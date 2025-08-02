@@ -4,7 +4,8 @@
     max-width: 700px;
     box-shadow: 0 0 10px 3px black;
     max-height: 300px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 .file-history-list{
     max-height: 250px;
@@ -37,7 +38,6 @@
     box-shadow: 0 0 5px white;
 }
 
-/* Popup overlay */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -51,7 +51,6 @@
   z-index: 999;
 }
 
-/* Popup box */
 .popup-content {
   background-color: #0d1117;
   padding: 2rem;
@@ -63,8 +62,13 @@
   position: relative;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
+.full-file-history{
+  max-height: 60vh; 
+  margin-top: 1rem;
+  overflow-y: scroll;
+}
 
-/* Close button */
+
 .close-btn {
   background-color: #f44336;
   border: none;
@@ -78,4 +82,32 @@
 
 .close-btn:hover {
   background-color: #d32f2f;
+}
+
+.view-reports-btn {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.view-reports-btn button {
+  padding: 12px 24px;
+  background-color: #4a0df1cb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.view-reports-btn button:hover {
+  background-color: #370bbd;
+  transform: translateY(-2px);
+}
+
+.view-reports-btn button:active {
+  background-color: #2c099a;
+  transform: translateY(1px);
 }

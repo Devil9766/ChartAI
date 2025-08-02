@@ -1,0 +1,46 @@
+.view-reports {
+  padding: 2rem;
+  background-color: #0d1117;
+  color: white;
+  min-height: 100vh;
+}
+.report-card {
+  background: #161b22;
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.report-header h3 {
+  margin: 0;
+}
+.report-header button {
+  background-color: #238636;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.report-details {
+  margin-top: 1rem;
+}
+.json-preview {
+  background: #0d1117;
+  padding: 1rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  border-left: 4px solid #30363d;
+}
+.chart-container {
+  margin-top: 2rem;
+  background: #1e222a;
+  padding: 1rem;
+  border-radius: 10px;
+}

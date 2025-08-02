@@ -46,18 +46,12 @@ export default function FileHistory(props){
             <h3>Your Recently Uploaded Files :</h3>
             <div className="file-history-list">
                 <ul>
-                    <li className="file-item" onClick={()=>handleFileClick(fileHistory[0].file_id)}>
-                        <strong className="clickable">{fileHistory[0].filename}</strong> <br />
-                        <small>Uploaded on : {new Date(fileHistory[0].uploaded_at).toLocaleString()}</small>
-                    </li>
-                     <li className="file-item" onClick={()=>handleFileClick(fileHistory[1].file_id)}>
-                        <strong className="clickable">{fileHistory[1].filename}</strong> <br />
-                        <small>Uploaded on : {new Date(fileHistory[1].uploaded_at).toLocaleString()}</small>
-                    </li>
-                     <li className="file-item" onClick={()=>handleFileClick(fileHistory[2].file_id)}>
-                        <strong className="clickable">{fileHistory[2].filename}</strong> <br />
-                        <small>Uploaded on : {new Date(fileHistory[2].uploaded_at).toLocaleString()}</small>
-                    </li>
+                    {fileHistory.slice(0, 3).map((file, index) => (
+                        <li key={index} className="file-item" onClick={() => handleFileClick(file.file_id)}>
+                        <strong className="clickable">{file.filename}</strong> <br />
+                        <small>Uploaded on : {new Date(file.uploaded_at).toLocaleString()}</small>
+                        </li>
+                    ))}
                 </ul>
                 <p className="history-btn" onClick={()=>setShowPopup(true)}>view full history</p>                
             </div>
@@ -65,7 +59,7 @@ export default function FileHistory(props){
                 <div className="popup-overlay">
                     <div className="popup-content">
                         <h3>Full history :</h3>
-                        <div className="file-history-list">
+                        <div className="full-file-history">
                             <ul>
                                 {fileHistory.map((item , index)=>(
                                     <li key={index} className="file-item" onClick={()=>handleFileClick(item.file_id)}>
@@ -79,6 +73,9 @@ export default function FileHistory(props){
                     </div>
                 </div>
             )}
+            <div className="view-reports-btn">
+                <button onClick={()=>nav("/reports")}>View Reports</button>
+            </div>
         </section>
     );
 }

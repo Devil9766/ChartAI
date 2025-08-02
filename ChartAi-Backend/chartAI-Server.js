@@ -159,6 +159,48 @@ app.post("/save-viz", VerifyToken, async (req, res) => {
 });
 
 
+app.get("/reports", VerifyToken, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const [reports] = await db.query(
+      "SELECT * FROM AnalysisReports WHERE user_id = ? ORDER BY created_at DESC",
+      [userId]
+    );
+    res.json(reports);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error fetching reports" });
+  }
+});
+
+
+app.get("/report/:reportId", VerifyToken, async (req, res) => {
+  const { reportId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const [[report]] = await db.query(
+      "SELECT * FROM AnalysisReports WHERE report_id = ? AND user_id = ?",
+      [reportId, userId]
+    );
+
+    if (!report) return res.status(404).json({ message: "Report not found" });
+
+    const [visualizations] = await db.query(
+      "SELECT * FROM Visualizations WHERE report_id = ?",
+      [reportId]
+    );
+
+    res.json({ report, visualizations });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching report" });
+  }
+});
+
+
+
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,

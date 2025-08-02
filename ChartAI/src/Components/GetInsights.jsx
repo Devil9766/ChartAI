@@ -1,11 +1,41 @@
 import React, { useEffect, useState } from "react";
 import api from "./api";
-import "./GetInsights.css"; // optional for external CSS styling
+import "./GetInsights.css"; 
 
 export default function GetInsights({ sheetData, chartConfig, onClose }) {
   const [insight, setInsight] = useState("");
   const [saving, setSaving] = useState(false);
-  const [loading, setLoading] = useState(true); // for loading state
+  const [loading, setLoading] = useState(true);
+  
+  const labels = chartConfig.data.map(d => d[chartConfig.xAxis]);
+  const values = chartConfig.data.map(d => d[chartConfig.yAxis]);
+
+  const chartJsConfig = {
+    type: chartConfig.chartType,
+    data: {
+      labels,
+      datasets: [{
+        label: chartConfig.yAxis,
+        data: values,
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        fill: chartConfig.chartType === "line" ? false : true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top"
+        },
+        title: {
+          display: true,
+          text: `Chart on ${chartConfig.xAxis} vs ${chartConfig.yAxis}`
+        }
+      }
+    }
+  };
+
 
   useEffect(() => {
     const generate = async () => {
@@ -40,10 +70,10 @@ export default function GetInsights({ sheetData, chartConfig, onClose }) {
         report_id,
         title: `Chart on ${sheetData.sheet_name}`,
         type: chartConfig.chartType,
-        config_json: chartConfig,
+        config_json: chartJsConfig, 
       });
 
-      onClose(); // close insight view
+      onClose(); 
     } catch (err) {
       console.error("Error saving insight:", err);
     }
