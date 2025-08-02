@@ -83,11 +83,11 @@ export default function UserDashboard(){
                             <p className="count">  {stats.file_count}</p>
                         </div>
                         <div className="count-block">
-                            <p>Total Sheets : </p>
+                            <p>Total Sheets: </p>
                             <p className="count">  {stats.sheet_count}</p>
                         </div>
                         <div className="count-block">
-                            <p>Total Insights : </p>
+                            <p>Total Insights: </p>
                             <p className="count">  {stats.total_insights}</p>
                         </div>
                         <div className="count-block">
