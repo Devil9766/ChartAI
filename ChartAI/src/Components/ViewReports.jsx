@@ -120,7 +120,6 @@ const exportToPNG = async (reportId) => {
       let config = {};
       try {
       config = typeof viz.config_json === "string" ? JSON.parse(viz.config_json) : viz.config_json;
-      console.log("Parsed config for", viz.title, config);
     } catch (e) {
       console.error("Invalid JSON in chart config:", viz.config_json);
       return <p key={index}>❌ Invalid JSON in chart config</p>;

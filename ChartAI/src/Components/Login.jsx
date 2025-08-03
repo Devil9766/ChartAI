@@ -3,6 +3,8 @@ import { Link ,useNavigate } from "react-router-dom";
 import api from "./api";
 import loginSvg from "../assets/login-svg.svg";
 import "./Login.css";
+import { useAuth } from "./Context/AuthContext";
+
 
 export default function Login(){
     const [data , setData] = useState({
@@ -16,23 +18,8 @@ export default function Login(){
         const{name , value} = e.target;
         setData(prev =>({...prev ,[name]: value }));
     }
-    useEffect(()=>{
-        const getRole = async()=>{
-        try {
-            const res =await api.get("/profile");
-            const role = res.data.role;
-            
-            if(role === "admin"){
-                nav("/admin-dashboard")
-            }else if(role === "user"){
-                nav("/user-dashboard");
-            } 
-            } catch (error) {
-            nav("/login");
-        } 
-    }
-        getRole();
-    } , []);
+    const { setUser } = useAuth();
+    
     const togglePassword = ()=>{
         setShowPassword(prev => !prev);
     }
@@ -49,11 +36,11 @@ export default function Login(){
         try {
             const result = await api.post("/login" , data);
             setError("");
-            const role = result.data.role;
-            sessionStorage.setItem("isLoggedIn" , "true");
+            const res = await api.get("/profile"); 
+            setUser(res.data);
+            const role = res.data.role;
             if(role === "user")nav("/user-dashboard");
             else if(role === "admin")nav("/admin-dashboard");
-            
 
         } catch (error) {
             if(error.response?.data?.message){

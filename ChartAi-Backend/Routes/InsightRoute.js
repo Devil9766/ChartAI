@@ -1,11 +1,11 @@
 import express from "express";
 import { generateInsight } from "../Controllers/insightService.js"
-
+import authorizeRoles from "../Middleware/AuthorizeRoles.js";
 import VerifyToken from "../Middleware/VerifyToken.js";
 
 const router = express.Router();
 
-router.post("/generate-insight", VerifyToken, async (req, res) => {
+router.post("/generate-insight", VerifyToken,authorizeRoles("user"), async (req, res) => {
   try {
     const { sheetData } = req.body;
     const insight = await generateInsight(sheetData);

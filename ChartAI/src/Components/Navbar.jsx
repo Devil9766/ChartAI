@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import "./Navbar.css"
 import {Link, useNavigate} from "react-router-dom";
 import api from "./api";
+import { useAuth } from "./Context/AuthContext";
 
 export default function Navbar(){
+    const {user , loading, setUser} = useAuth();
     const [userRole , setUserRole] = useState();
-    const userLoggedIn = !!sessionStorage.getItem("isLoggedIn")
     const nav  = useNavigate();
+
+    const isLoggedIn = !!user;
+
     const handleLogout = async ()=>{
         try {
             await api.post("/logout");
             setUserRole(null);
-            sessionStorage.removeItem("isLoggedIn");
+            setUser(null)
             nav("/login");
         } catch (error) {
             console.log("Logout failed : ",error)
@@ -19,7 +23,6 @@ export default function Navbar(){
         
     }
      useEffect(()=>{
-        if(userLoggedIn){
         const getRole = async()=>{
         try {
             const res =await api.get("/profile");
@@ -27,14 +30,14 @@ export default function Navbar(){
             setUserRole(role);
             } catch (error) {
             setUserRole(null);
-            sessionStorage.removeItem("isLoggedIn");
-           
+            setUser(null);
+            }
         }
-    }
-    getRole();
-    }
-    
-    } , [userLoggedIn , nav]);
+
+        if(isLoggedIn){
+            getRole();
+        }
+    } , [isLoggedIn]);
 
 
     
@@ -49,7 +52,7 @@ export default function Navbar(){
                 <Link className="link" to="/docs" >Docs</Link>
                 {userRole === "admin" && <Link className="link" to="/admin-dashboard" >Admin Dashboard</Link>}
                 {userRole === "user" && <Link className="link" to="/user-dashboard" >User Dashboard</Link>}
-                { userLoggedIn ? 
+                { isLoggedIn ? 
                     (<button className="logout link" onClick={handleLogout}>Logout</button>)
                 :
                     (<Link className="link span" to="/login" >Get Started</Link>)

@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import { handleExcelUpload } from "../Controllers/uploadController.js";
 import VerifyToken from "../Middleware/VerifyToken.js";
+import authorizeRoles from "../Middleware/AuthorizeRoles.js";
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-router.post("/upload", VerifyToken, (req, res, next) => {
+router.post("/upload", VerifyToken,authorizeRoles("user"), (req, res, next) => {
   upload.single("DataFile")(req, res, (err) => {
     if (err instanceof multer.MulterError || err) {
       return res.status(400).json({ message: err.message });

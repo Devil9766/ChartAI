@@ -14,6 +14,7 @@ export const handleExcelUpload = async (req, res) => {
     const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
     const userId = req.user.id;
     const filename = req.file.originalname;
+
     const normalizeData = (dataArray) => {
       return dataArray.map((item) => {
         const cleanedItem = {};
@@ -22,14 +23,12 @@ export const handleExcelUpload = async (req, res) => {
             const trimmedKey = key.trim();
             const value = item[key];
 
-            // Optional: If the value is a string, trim it too
             cleanedItem[trimmedKey] = typeof value === 'string' ? value.trim() : value;
           }
         }
         return cleanedItem;
       });
     };
-
 
     const [result] = await db.execute(
       "INSERT INTO UploadedFiles (user_id, filename, filepath) VALUES (?, ?, ?)",

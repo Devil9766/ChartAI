@@ -13,6 +13,7 @@ import fileHistoryRoute from "./Routes/fileHistoryRoute.js"
 import sheetRoute from "./Routes/SheetRoute.js"; 
 import InsightRoute from "./Routes/InsightRoute.js"
 import isAdmin from "./Middleware/isAdmin.js";
+import authorizeRoles from "./Middleware/AuthorizeRoles.js";
 const PORT = process.env.PORT;
 const app = express();
 const saltRound = 10;
@@ -78,20 +79,31 @@ app.post("/login" , async (req , res)=>{
         maxAge : 60*60*1000
     })
 
-    res.status(200).json({message : "Login Successful", role : user.role });
+    res.status(200).json({message : "Login Successful"});
     }catch(error){
         res.status(500).json({message :" Internal server error"});
     }
 })
-app.get("/profile", VerifyToken, (req, res) => {
-    res.json({
-        email: req.user.email,
-        role: req.user.role,
-        name: req.user.name
-    });
+app.get("/profile", VerifyToken, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const [rows] = await db.query("SELECT user_id, name, email, role FROM users WHERE user_id = ?", [req.user.id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json(rows[0]); // ✅ use return
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-app.get('/stats', VerifyToken, async (req, res) => {
+
+app.get('/stats', VerifyToken,authorizeRoles("user","admin"), async (req, res) => {
     const userId = req.user.id;
 
     const [rows] = await db.execute(`
@@ -121,25 +133,7 @@ app.use("/api" , sheetRoute);
 app.use("/api" , InsightRoute);
 
 
-export const generateInsight = async (dataJson) => {
-  const prompt = `You are a data analyst. Given this JSON array, summarize key insights:\n\n${JSON.stringify(dataJson, null, 2)}\n\nWhat trends or patterns do you see?`;
-
-  try {
-    const response = await cohere.generate({
-      model: "command-r-plus",
-      prompt: prompt,
-      max_tokens: 300,
-      temperature: 0.5
-    });
-
-    return response.body.generations[0].text;
-  } catch (error) {
-    console.error("Cohere Insight Error:", error);
-    return "Insight generation failed.";
-  }
-};
-
-app.post("/save-report", VerifyToken, async (req, res) => {
+app.post("/save-report", VerifyToken,authorizeRoles("user"), async (req, res) => {
   const { data_id, title, summary, report_json } = req.body;
   const user_id = req.user.id;
 
@@ -151,7 +145,7 @@ app.post("/save-report", VerifyToken, async (req, res) => {
   res.json({ message: "Insight saved", report_id: result.insertId });
 });
 
-app.post("/save-viz", VerifyToken, async (req, res) => {
+app.post("/save-viz", VerifyToken, authorizeRoles("user"), async (req, res) => {
   const { report_id, type, config_json, title } = req.body;
 
   await db.query(`
@@ -163,7 +157,7 @@ app.post("/save-viz", VerifyToken, async (req, res) => {
 });
 
 
-app.get("/reports", VerifyToken, async (req, res) => {
+app.get("/reports", VerifyToken, authorizeRoles("user"), async (req, res) => {
   const userId = req.user.id;
 
   try {
@@ -179,7 +173,7 @@ app.get("/reports", VerifyToken, async (req, res) => {
 });
 
 
-app.get("/report/:reportId", VerifyToken, async (req, res) => {
+app.get("/report/:reportId", VerifyToken, authorizeRoles("user"), async (req, res) => {
   const { reportId } = req.params;
   const userId = req.user.id;
 
@@ -204,7 +198,7 @@ app.get("/report/:reportId", VerifyToken, async (req, res) => {
 });
 
 
-app.get("/admin/stats", VerifyToken, isAdmin, async (req, res) => {
+app.get("/admin/stats", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   try {
     const [[stats]] = await db.query(`
       SELECT
@@ -221,7 +215,7 @@ app.get("/admin/stats", VerifyToken, isAdmin, async (req, res) => {
   }
 });
 
-app.get("/admin/users", VerifyToken, isAdmin, async (req, res) => {
+app.get("/admin/users", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   try {
     const [users] = await db.query(`
       SELECT user_id AS id, name, email, role, is_blocked AS blocked FROM users;
@@ -233,7 +227,7 @@ app.get("/admin/users", VerifyToken, isAdmin, async (req, res) => {
   }
 });
 
-app.post("/admin/block/:userId", VerifyToken, isAdmin, async (req, res) => {
+app.post("/admin/block/:userId", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -248,7 +242,7 @@ app.post("/admin/block/:userId", VerifyToken, isAdmin, async (req, res) => {
   }
 });
 
-app.post("/admin/unblock/:userId", VerifyToken, isAdmin, async (req, res) => {
+app.post("/admin/unblock/:userId", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -264,7 +258,7 @@ app.post("/admin/unblock/:userId", VerifyToken, isAdmin, async (req, res) => {
 });
 
 
-app.post("/admin/users", VerifyToken, async (req, res) => {
+app.post("/admin/users", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   const { name, email, role, password } = req.body;
 
   if (!name || !email || !role || !password) {
@@ -298,14 +292,14 @@ app.post("/admin/users", VerifyToken, async (req, res) => {
 });
 
 
-app.put("/admin/users/:id", VerifyToken, async (req, res) => {
+app.put("/admin/users/:id", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   const { name, email, role } = req.body;
   const userId = req.params.id;
   await db.query("UPDATE users SET name = ?, email = ?, role = ? WHERE user_id = ?", [name, email, role, userId]);
   res.json({ message: "User updated" });
 });
 
-app.delete("/admin/users/:id", VerifyToken, async (req, res) => {
+app.delete("/admin/users/:id", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   const userId = req.params.id;
 
   try {
@@ -328,7 +322,7 @@ app.delete("/admin/users/:id", VerifyToken, async (req, res) => {
 });
 
 
-app.post("/logout", (req, res) => {
+app.post("/logout",VerifyToken,authorizeRoles("user","admin"), (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

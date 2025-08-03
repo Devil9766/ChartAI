@@ -10,12 +10,16 @@ import UserDashboard from './Components/UserDashboard'
 import ViewChart from './Components/ViewCharts'
 import ViewReports from './Components/ViewReports'
 import AdminDashboard from './Components/AdminDashboard'
+import ProtectedRoute from './Components/ProtectedRoute'
+import { useAuth } from './Components/Context/AuthContext'
 
 
 
 
 function App() {
- 
+  const { loading } = useAuth();
+
+  if (loading) return <div className="loading">Loading...</div>;
 
   return (
     <>
@@ -25,10 +29,38 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
-          <Route path='/user-dashboard' element={<UserDashboard />} />
-          <Route path='/admin-dashboard' element={<AdminDashboard />} />
-          <Route path='/visualize/:id' element={<ViewChart />} />
-          <Route path='/reports' element={<ViewReports />} />
+          <Route
+            path='/user-dashboard'
+            element={
+              <ProtectedRoute allowedRoles={['user']}>
+                <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin-dashboard'
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/visualize/:id'
+            element={
+              <ProtectedRoute allowedRoles={['user', 'admin']}>
+                <ViewChart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/reports'
+            element={
+              <ProtectedRoute allowedRoles={['user', 'admin']}>
+                <ViewReports />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </ScrollToTop>
       <Footer />
