@@ -12,6 +12,7 @@ import db from "./db.js";
 import fileHistoryRoute from "./Routes/fileHistoryRoute.js"
 import sheetRoute from "./Routes/SheetRoute.js"; 
 import InsightRoute from "./Routes/InsightRoute.js"
+import isAdmin from "./Middleware/isAdmin.js";
 const PORT = process.env.PORT;
 const app = express();
 const saltRound = 10;
@@ -58,6 +59,9 @@ app.post("/login" , async (req , res)=>{
         res.status(401).json({message : "Invalid email and password."})
     }
     const user = row[0];
+    if (user.is_blocked) {
+      return res.status(403).json({ message: "User is blocked. Contact admin." });
+    }
 
     const isMatch = await bcrypt.compare(password , user.password_hash);
     if(!isMatch){
@@ -199,6 +203,129 @@ app.get("/report/:reportId", VerifyToken, async (req, res) => {
   }
 });
 
+
+app.get("/admin/stats", VerifyToken, isAdmin, async (req, res) => {
+  try {
+    const [[stats]] = await db.query(`
+      SELECT
+        (SELECT COUNT(*) FROM users) AS user_count,
+        (SELECT COUNT(*) FROM UploadedFiles) AS file_count,
+        (SELECT COUNT(*) FROM AnalysisReports) AS report_count,
+        (SELECT COUNT(*) FROM Visualizations) AS visualization_count
+    `);
+
+    res.json(stats);
+  } catch (err) {
+    console.error("Admin stats error:", err);
+    res.status(500).json({ message: "Server error fetching admin stats" });
+  }
+});
+
+app.get("/admin/users", VerifyToken, isAdmin, async (req, res) => {
+  try {
+    const [users] = await db.query(`
+      SELECT user_id AS id, name, email, role, is_blocked AS blocked FROM users;
+    `);
+    res.json(users);
+  } catch (err) {
+    console.error("Fetch users error:", err);
+    res.status(500).json({ message: "Server error fetching users" });
+  }
+});
+
+app.post("/admin/block/:userId", VerifyToken, isAdmin, async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    await db.query(
+      "UPDATE users SET is_blocked = 1 WHERE user_id = ?",
+      [userId]
+    );
+    res.json({ message: "User blocked successfully" });
+  } catch (err) {
+    console.error("Block user error:", err);
+    res.status(500).json({ message: "Server error blocking user" });
+  }
+});
+
+app.post("/admin/unblock/:userId", VerifyToken, isAdmin, async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    await db.query(
+      "UPDATE users SET is_blocked = 0 WHERE user_id = ?",
+      [userId]
+    );
+    res.json({ message: "User unblocked successfully" });
+  } catch (err) {
+    console.error("Unblock user error:", err);
+    res.status(500).json({ message: "Server error unblocking user" });
+  }
+});
+
+
+app.post("/admin/users", VerifyToken, async (req, res) => {
+  const { name, email, role, password } = req.body;
+
+  if (!name || !email || !role || !password) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  try {
+    const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    if (existing.length > 0) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const [result] = await db.query(
+      "INSERT INTO users (name, email, role, password_hash) VALUES (?, ?, ?, ?)",
+      [name, email, role, hashedPassword]
+    );
+
+    const [newUser] = await db.query(
+      "SELECT user_id AS id, name, email, role FROM users WHERE user_id = ?",
+      [result.insertId]
+    );
+
+    res.status(201).json(newUser[0]);
+  } catch (error) {
+    console.error("Admin Add User Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+app.put("/admin/users/:id", VerifyToken, async (req, res) => {
+  const { name, email, role } = req.body;
+  const userId = req.params.id;
+  await db.query("UPDATE users SET name = ?, email = ?, role = ? WHERE user_id = ?", [name, email, role, userId]);
+  res.json({ message: "User updated" });
+});
+
+app.delete("/admin/users/:id", VerifyToken, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const [existing] = await db.query("SELECT * FROM users WHERE user_id = ?", [userId]);
+    if (existing.length === 0) return res.status(404).json({ message: "User not found" });
+
+    // Optional: Protect against deleting the only admin
+    if (existing[0].role === "admin") {
+      const [admins] = await db.query("SELECT COUNT(*) AS count FROM users WHERE role = 'admin'");
+      if (admins[0].count <= 1)
+        return res.status(400).json({ message: "Cannot delete the only admin" });
+    }
+
+    await db.query("DELETE FROM users WHERE user_id = ?", [userId]);
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 app.post("/logout", (req, res) => {

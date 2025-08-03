@@ -9,6 +9,7 @@ import SignUp from './Components/Signup';
 import UserDashboard from './Components/UserDashboard'
 import ViewChart from './Components/ViewCharts'
 import ViewReports from './Components/ViewReports'
+import AdminDashboard from './Components/AdminDashboard'
 
 
 
@@ -25,6 +26,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/user-dashboard' element={<UserDashboard />} />
+          <Route path='/admin-dashboard' element={<AdminDashboard />} />
           <Route path='/visualize/:id' element={<ViewChart />} />
           <Route path='/reports' element={<ViewReports />} />
         </Routes>

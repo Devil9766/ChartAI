@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "./api";
 import "./GetInsights.css"; 
+import { useNavigate } from "react-router-dom";
 
 export default function GetInsights({ sheetData, chartConfig, onClose }) {
   const [insight, setInsight] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+  const nav = useNavigate();
   const labels = chartConfig.data.map(d => d[chartConfig.xAxis]);
   const values = chartConfig.data.map(d => d[chartConfig.yAxis]);
 
@@ -73,7 +74,8 @@ export default function GetInsights({ sheetData, chartConfig, onClose }) {
         config_json: chartJsConfig, 
       });
 
-      onClose(); 
+      onClose();
+      nav("/reports") 
     } catch (err) {
       console.error("Error saving insight:", err);
     }
