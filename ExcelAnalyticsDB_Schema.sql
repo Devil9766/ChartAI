@@ -10,8 +10,10 @@ CREATE TABLE Users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(20) DEFAULT 'user',
+    is_blocked BOOLEAN DEFAULT FALSE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- 2. UploadedFiles Table
 CREATE TABLE UploadedFiles (
