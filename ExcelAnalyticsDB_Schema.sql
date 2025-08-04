@@ -1,7 +1,6 @@
 
 -- Create Database
-CREATE DATABASE IF NOT EXISTS ExcelAnalyticsDB;
-USE ExcelAnalyticsDB;
+
 
 -- 1. Users Table
 CREATE TABLE Users (

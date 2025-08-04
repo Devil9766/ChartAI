@@ -37,13 +37,13 @@ app.post("/signUp" , async (req , res)=>{
         return res.status(400).json({ message: "All fields are required." });
     }
     try {
-        const [row] = await db.execute("select * from users where email = ?" , [email]);
+        const [row] = await db.execute("select * from Users where email = ?" , [email]);
         if(row.length > 0){
           return  res.status(409).json({message : "user already exists"})
         }
 
         const hashedPassword = await bcrypt.hash(password , saltRound);
-        await db.execute("insert into users(name , email , password_hash) values(? ,? ,?)" , [name , email , hashedPassword]);
+        await db.execute("insert into Users(name , email , password_hash) values(? ,? ,?)" , [name , email , hashedPassword]);
 
         return res.status(201).json({message : "User created successfully"});
     } catch (error) {
@@ -55,7 +55,7 @@ app.post("/signUp" , async (req , res)=>{
 app.post("/login" , async (req , res)=>{
     const {email , password} = req.body ; 
     try{
-    const[row] = await db.execute("select * from users where email = ?" , [email]);
+    const[row] = await db.execute("select * from Users where email = ?" , [email]);
     if(row.length == 0){
         res.status(401).json({message : "Invalid email and password."})
     }
@@ -90,7 +90,7 @@ app.get("/profile", VerifyToken, async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const [rows] = await db.query("SELECT user_id, name, email, role FROM users WHERE user_id = ?", [req.user.id]);
+    const [rows] = await db.query("SELECT user_id, name, email, role FROM Users WHERE user_id = ?", [req.user.id]);
     if (rows.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -115,8 +115,8 @@ app.get('/stats', VerifyToken,authorizeRoles("user","admin"), async (req, res) =
              WHERE uf.user_id = ?) AS sheet_count,
             (SELECT COUNT(*) FROM AnalysisReports WHERE user_id = ?) AS total_insights,
             (SELECT COUNT(*) 
-             FROM visualizations vs
-             JOIN analysisreports ar ON ar.report_id = vs.report_id 
+             FROM Visualizations vs
+             JOIN Analysisreports ar ON ar.report_id = vs.report_id 
              WHERE ar.user_id = ?) AS visualization_saved_count
     `, [userId, userId, userId, userId]);
 
@@ -202,7 +202,7 @@ app.get("/admin/stats", VerifyToken, authorizeRoles("admin"), async (req, res) =
   try {
     const [[stats]] = await db.query(`
       SELECT
-        (SELECT COUNT(*) FROM users) AS user_count,
+        (SELECT COUNT(*) FROM Users) AS user_count,
         (SELECT COUNT(*) FROM UploadedFiles) AS file_count,
         (SELECT COUNT(*) FROM AnalysisReports) AS report_count,
         (SELECT COUNT(*) FROM Visualizations) AS visualization_count
@@ -218,7 +218,7 @@ app.get("/admin/stats", VerifyToken, authorizeRoles("admin"), async (req, res) =
 app.get("/admin/users", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   try {
     const [users] = await db.query(`
-      SELECT user_id AS id, name, email, role, is_blocked AS blocked FROM users;
+      SELECT user_id AS id, name, email, role, is_blocked AS blocked FROM Users;
     `);
     res.json(users);
   } catch (err) {
@@ -232,7 +232,7 @@ app.post("/admin/block/:userId", VerifyToken, authorizeRoles("admin"), async (re
 
   try {
     await db.query(
-      "UPDATE users SET is_blocked = 1 WHERE user_id = ?",
+      "UPDATE Users SET is_blocked = 1 WHERE user_id = ?",
       [userId]
     );
     res.json({ message: "User blocked successfully" });
@@ -247,7 +247,7 @@ app.post("/admin/unblock/:userId", VerifyToken, authorizeRoles("admin"), async (
 
   try {
     await db.query(
-      "UPDATE users SET is_blocked = 0 WHERE user_id = ?",
+      "UPDATE Users SET is_blocked = 0 WHERE user_id = ?",
       [userId]
     );
     res.json({ message: "User unblocked successfully" });
@@ -266,7 +266,7 @@ app.post("/admin/users", VerifyToken, authorizeRoles("admin"), async (req, res) 
   }
 
   try {
-    const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [existing] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
     if (existing.length > 0) {
       return res.status(409).json({ message: "Email already exists" });
     }
@@ -275,12 +275,12 @@ app.post("/admin/users", VerifyToken, authorizeRoles("admin"), async (req, res) 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const [result] = await db.query(
-      "INSERT INTO users (name, email, role, password_hash) VALUES (?, ?, ?, ?)",
+      "INSERT INTO Users (name, email, role, password_hash) VALUES (?, ?, ?, ?)",
       [name, email, role, hashedPassword]
     );
 
     const [newUser] = await db.query(
-      "SELECT user_id AS id, name, email, role FROM users WHERE user_id = ?",
+      "SELECT user_id AS id, name, email, role FROM Users WHERE user_id = ?",
       [result.insertId]
     );
 
@@ -295,7 +295,7 @@ app.post("/admin/users", VerifyToken, authorizeRoles("admin"), async (req, res) 
 app.put("/admin/users/:id", VerifyToken, authorizeRoles("admin"), async (req, res) => {
   const { name, email, role } = req.body;
   const userId = req.params.id;
-  await db.query("UPDATE users SET name = ?, email = ?, role = ? WHERE user_id = ?", [name, email, role, userId]);
+  await db.query("UPDATE Users SET name = ?, email = ?, role = ? WHERE user_id = ?", [name, email, role, userId]);
   res.json({ message: "User updated" });
 });
 
@@ -303,17 +303,17 @@ app.delete("/admin/users/:id", VerifyToken, authorizeRoles("admin"), async (req,
   const userId = req.params.id;
 
   try {
-    const [existing] = await db.query("SELECT * FROM users WHERE user_id = ?", [userId]);
+    const [existing] = await db.query("SELECT * FROM Users WHERE user_id = ?", [userId]);
     if (existing.length === 0) return res.status(404).json({ message: "User not found" });
 
     // Optional: Protect against deleting the only admin
     if (existing[0].role === "admin") {
-      const [admins] = await db.query("SELECT COUNT(*) AS count FROM users WHERE role = 'admin'");
+      const [admins] = await db.query("SELECT COUNT(*) AS count FROM Users WHERE role = 'admin'");
       if (admins[0].count <= 1)
         return res.status(400).json({ message: "Cannot delete the only admin" });
     }
 
-    await db.query("DELETE FROM users WHERE user_id = ?", [userId]);
+    await db.query("DELETE FROM Users WHERE user_id = ?", [userId]);
     res.json({ message: "User deleted successfully" });
   } catch (err) {
     console.error("Error deleting user:", err);
