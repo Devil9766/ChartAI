@@ -21,7 +21,7 @@ const saltRound = 10;
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors({
-    origin : "http://localhost:5173",
+    origin : "https://chart-ai-hrishi-sharmas-projects.vercel.app/",
     credentials : true
 }));
 app.use(express.json())
