@@ -322,11 +322,12 @@ app.delete("/admin/users/:id", VerifyToken, authorizeRoles("admin"), async (req,
 });
 
 
-app.post("/logout",VerifyToken,authorizeRoles("user","admin"), (req, res) => {
+app.post("/logout",VerifyToken, (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax"
+    secure: true,
+    sameSite: "none",
+    path : "/"
   });
   res.status(200).json({ message: "Logged out successfully" });
 });
