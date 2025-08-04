@@ -23,9 +23,11 @@ const allowedOrigins = [
   "https://chart-ai.vercel.app"
 ];
 
-
+app.use(express.json())
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:true}));
 
+dotenv.config();
 
 app.use(
   cors({
