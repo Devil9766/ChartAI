@@ -95,7 +95,7 @@ app.get("/profile", VerifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.json(rows[0]); // ✅ use return
+    return res.json(rows[0]); 
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal server error" });
@@ -116,7 +116,7 @@ app.get('/stats', VerifyToken,authorizeRoles("user","admin"), async (req, res) =
             (SELECT COUNT(*) FROM AnalysisReports WHERE user_id = ?) AS total_insights,
             (SELECT COUNT(*) 
              FROM Visualizations vs
-             JOIN Analysisreports ar ON ar.report_id = vs.report_id 
+             JOIN AnalysisReports ar ON ar.report_id = vs.report_id 
              WHERE ar.user_id = ?) AS visualization_saved_count
     `, [userId, userId, userId, userId]);
 
