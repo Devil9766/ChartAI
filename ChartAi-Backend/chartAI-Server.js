@@ -17,16 +17,27 @@ import authorizeRoles from "./Middleware/AuthorizeRoles.js";
 const PORT = process.env.PORT;
 const app = express();
 const saltRound = 10;
-
+const allowedOrigins = [
+  "http://localhost:5173", 
+  "https://chart-ai-hrishi-sharmas-projects.vercel.app/",
+  "https://chart-ai.vercel.app/"
+];
 
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cors({
-    origin : "https://chart-ai-hrishi-sharmas-projects.vercel.app/",
-    credentials : true
-}));
-app.use(express.json())
-app.use(cookieParser());
-dotenv.config();
+
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  })
+);
 
 
 
