@@ -18,10 +18,11 @@ const PORT = process.env.PORT;
 const app = express();
 const saltRound = 10;
 const allowedOrigins = [
-  "http://localhost:5173", 
-  "https://chart-ai-hrishi-sharmas-projects.vercel.app/",
-  "https://chart-ai.vercel.app/"
+  "http://localhost:5173",
+  "https://chart-ai-hrishi-sharmas-projects.vercel.app",
+  "https://chart-ai.vercel.app"
 ];
+
 
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -32,6 +33,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
