@@ -30,6 +30,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
+          <Route path='/docs' element={<Docs />}/>
           <Route
             path='/user-dashboard'
             element={
@@ -51,14 +52,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['user', 'admin']}>
                 <ViewChart />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/docs'
-            element={
-              <ProtectedRoute allowedRoles={['user', 'admin']}>
-                <Docs />
               </ProtectedRoute>
             }
           />
