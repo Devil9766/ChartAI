@@ -12,6 +12,7 @@ import ViewReports from './Components/ViewReports'
 import AdminDashboard from './Components/AdminDashboard'
 import ProtectedRoute from './Components/ProtectedRoute'
 import { useAuth } from './Components/Context/AuthContext'
+import Docs from './Components/Docs'
 
 
 
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['user', 'admin']}>
                 <ViewChart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/docs'
+            element={
+              <ProtectedRoute allowedRoles={['user', 'admin']}>
+                <Docs />
               </ProtectedRoute>
             }
           />

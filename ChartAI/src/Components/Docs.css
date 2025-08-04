@@ -1,0 +1,103 @@
+:root {
+  --bg-dark: #0d0d0d;
+  --bg-card: #1a1a1a;
+  --border-color: #2a2a2a;
+  --accent: #00c8ff;
+  --text-light: #d1d1d1;
+  --text-dim: #aaaaaa;
+  --font-main: "Segoe UI", sans-serif;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  margin: 0;
+  color: var(--text-light);
+}
+
+.docs-container {
+  padding: 60px 100px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.docs-title {
+  font-size: 2.8rem;
+  text-align: center;
+  margin-bottom: 50px;
+  color: var(--accent);
+}
+
+
+.docs-section {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.docs-section:hover {
+  border-color: var(--accent);
+  transform: scale(1.01);
+}
+
+.docs-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  color: var(--accent);
+}
+
+
+.docs-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-light);
+}
+
+.docs-section ul,
+.docs-section ol {
+  padding-left: 1.5rem;
+  margin-top: 10px;
+  line-height: 1.8;
+}
+
+.docs-section li {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--text-dim);
+}
+
+.docs-section li strong {
+  color: var(--text-light);
+}
+
+.docs-section pre {
+  background-color: #121212;
+  color: #00ff90;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  overflow-x: auto;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .docs-container {
+    padding: 40px 20px;
+  }
+
+  .docs-title {
+    font-size: 2.2rem;
+  }
+
+  .docs-section {
+    padding: 20px;
+  }
+
+  .docs-section h2 {
+    font-size: 1.4rem;
+  }
+}

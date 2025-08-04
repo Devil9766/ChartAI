@@ -18,6 +18,10 @@
 .clickable {
     cursor: pointer;
     color: #007bff;
+    word-wrap: break-word;     /* Break long words */
+    overflow-wrap: break-word; /* Modern alternative */
+    white-space: normal;       /* Allow wrapping */
+    max-width: 100%; 
 }
 
 .clickable:hover {
