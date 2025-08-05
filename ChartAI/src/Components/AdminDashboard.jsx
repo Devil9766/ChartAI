@@ -135,11 +135,11 @@ export default function AdminDashboard() {
                 <tbody>
                     {users.map((u) => (
                     <tr key={u.id}>
-                        <td>{u.id}</td>
-                        <td>{u.name}</td>
-                        <td>{u.email}</td>
-                        <td>{u.role}</td>
-                        <td>{u.blocked ? "Blocked" : "Active"}</td>
+                        <td data-label="ID">{u.id}</td>
+                        <td data-label="Name">{u.name}</td>
+                        <td data-label="Email">{u.email}</td>
+                        <td data-label="Role">{u.role}</td>
+                        <td data-label="Status">{u.blocked ? "Blocked" : "Active"}</td>
                         <td>
                             <button onClick={() => openEditForm(u)} className="edit-btn">Edit</button>
                             {u.blocked ? (

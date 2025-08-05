@@ -26,9 +26,7 @@
     padding: 0.3em;
     background-color: #1b1b1b ;
 }
-/* .visualize-sidebar li{
-    list-style: none;
-} */
+
 .sheet-list{
     padding: 0.3em;
 }
@@ -198,5 +196,78 @@ background-color: #2b2c2c ;
   background-color: #141414;
 }
 
+/* Add media query for small screens */
+@media (max-width: 768px) {
+  .visualize-container {
+    padding: 20px 10px;
+  }
+
+  .sheet-flex-container {
+    flex-direction: column;
+    padding: 0.5em;
+    gap: 10px;
+  }
+
+  .visualize-sidebar {
+    width: 100%;
+    max-width: none;
+    order: 1;
+  }
+
+  .sheet-visualization {
+    width: 100%;
+    order: 2;
+    padding: 0.5em;
+  }
+
+  .visual-axis {
+    max-width: 100%;
+    width: 100%;
+    padding: 0.8rem;
+  }
+
+  .axis {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .chart-types select {
+    width: 100%;
+  }
+
+  .download-btn,
+  .insight-btn {
+    width: 100%;
+    font-size: 1.1em;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .insight-btn {
+    padding: 1.2em;
+  }
+
+  .visualization-options {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.5em;
+    gap: 15px;
+  }
+
+  .charts-area {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.5em 0;
+  }
+
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .chart-types {
+    width: 100%;
+  }
+}
 
 

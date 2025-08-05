@@ -151,4 +151,86 @@
   background-color: #c82333;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 80px 20px;
+  }
+
+  .admin-widgets {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .count-block {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .admin-user-table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .admin-user-table thead,
+  .admin-user-table tbody,
+  .admin-user-table th,
+  .admin-user-table td,
+  .admin-user-table tr {
+    display: block;
+    text-align: left;
+  }
+
+  .admin-user-table thead {
+    display: none;
+  }
+
+  .admin-user-table tr {
+    border: 1px solid #444;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .admin-user-table td {
+    padding: 8px 10px;
+    position: relative;
+  }
+
+  .admin-user-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: block;
+    color: #ccc;
+    margin-bottom: 4px;
+  }
+
+  .modal {
+    width: 90%;
+  }
+
+  .add-btn,
+  .edit-btn,
+  .block-btn,
+  .unblock-btn,
+  .delete-btn,
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    font-size: 1em;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    margin: 5px 0;
+  }
+
+  .admin-user-section {
+    margin-top: 20px;
+  }
+}
+
+
 

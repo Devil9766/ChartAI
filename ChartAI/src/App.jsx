@@ -13,6 +13,8 @@ import AdminDashboard from './Components/AdminDashboard'
 import ProtectedRoute from './Components/ProtectedRoute'
 import { useAuth } from './Components/Context/AuthContext'
 import Docs from './Components/Docs'
+import "./App.css";
+import NotFound from './Components/NotFound'
 
 
 
@@ -20,7 +22,11 @@ import Docs from './Components/Docs'
 function App() {
   const { loading } = useAuth();
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return (
+    <div className="loading-container">
+      <div className="loading-prop-1"><div className='loading-prop-2'></div></div>
+      <p>Loading...</p>
+    </div>);
 
   return (
     <>
@@ -63,6 +69,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </ScrollToTop>
       <Footer />
