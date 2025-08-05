@@ -13,7 +13,7 @@ ChartAI is a full-stack web application that empowers users to upload Excel file
 - 🧠 Get real-time **AI insights** using **Cohere AI** based on uploaded data.
 - 📄 Export visualizations and insights as **PDF reports**.
 - 👤 Role-based dashboards for **Users** and **Admins**.
-- 🔐 Secure login with session management using `localStorage`.
+- 🔐 Secure login with session management using `Context API`.
 - 📜 View file history, report archive, and insight summaries.
 - 🌐 Deployed on **Vercel (frontend)** and **Render (backend)**.
 
@@ -136,7 +136,7 @@ Render
 
 📬 Contact
 Hrishi Sharma
-📧 LinkedIn (add yours if available)
-📁 Portfolio (optional)
+📧 LinkedIn https://www.linkedin.com/in/hrishi-sharma9766/
+📁 Portfolio https://hrishi-portfolio.onrender.com/
 
 Made with 💡 and ☕ by Hrishi Sharma
