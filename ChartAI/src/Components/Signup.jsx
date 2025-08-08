@@ -14,7 +14,7 @@ export default function SignUp(){
     })
     const [ error , setError] = useState("");
     const nav = useNavigate();
-    
+    const [loading , setLoading]  = useState();
     const handleChange =(e)=>{
         const{name , value} = e.target;
         setData(prev =>({...prev ,[name]: value }));
@@ -33,6 +33,7 @@ export default function SignUp(){
         }else{
         
             try {
+                setLoading(true)
                 setError("")
                 const response =await api.post(("/signup") , data);
                 setData({
@@ -42,7 +43,9 @@ export default function SignUp(){
                     confirmPassword: ""
                     });
                 nav("/login");   
+                setLoading(false);
             } catch (error) {
+                setLoading(false)
                 if(error.response?.data?.message){
                     setError(error.response.data.message);
                 }else{
@@ -69,7 +72,7 @@ export default function SignUp(){
                     <input type="password" onChange={handleChange} id="password" name="password" value={data.password}/>
                     <label htmlFor="confirmPassword">Confirm Password</label>
                     <input type="password" onChange={handleChange} id="confirmPassword" name="confirmPassword" value={data.confirmPassword}/>
-                    <input type="submit" value="Submit"/>
+                    <input type="submit" value={loading? "Submitting" : "Submit"}/>
                 </form>
                 <span style={{color: "red"}}>{error}</span>
             </div>

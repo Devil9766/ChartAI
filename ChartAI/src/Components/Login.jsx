@@ -12,7 +12,8 @@ export default function Login(){
         password: ""
     })
     const [showPassword , setShowPassword] = useState(false);
-    const[error , setError] = useState("")
+    const[error , setError] = useState("");
+    const [loading , setLoading] = useState();
     const nav = useNavigate();
     const handleChange =(e)=>{
         const{name , value} = e.target;
@@ -34,6 +35,7 @@ export default function Login(){
         }
         
         try {
+            setLoading(true);
             const result = await api.post("/login" , data);
             setError("");
             const res = await api.get("/profile"); 
@@ -41,8 +43,9 @@ export default function Login(){
             const role = res.data.role;
             if(role === "user")nav("/user-dashboard");
             else if(role === "admin")nav("/admin-dashboard");
-
+            setLoading(false);
         } catch (error) {
+            setLoading(false)
             if(error.response?.data?.message){
                 setError(error.response.data.message)
             }else{
@@ -79,7 +82,7 @@ export default function Login(){
                                 />
                             </span>
                         </div>
-                        <button type="submit">Login</button>
+                        <button type="submit">{loading? "Logging in..." : "Login"}</button>
                         </form>
                         <span style={{color : "red"}}>{error}</span>
                     </div>

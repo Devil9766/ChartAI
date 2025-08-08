@@ -71,37 +71,37 @@ export default function AdminDashboard() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         };
 
-        const handleSubmit = async () => {
-            try {
-                if (editingUser) {
-                const { name, email, role } = formData;
-                await api.put(`/admin/users/${editingUser.id}`, { name, email, role });
-                setUsers((prev) =>
-                    prev.map((u) => (u.id === editingUser.id ? { ...u, name, email, role } : u))
-                );
-                } else {
-                const res = await api.post("/admin/users", formData);
-                setUsers((prev) => [...prev, res.data]);
-                }
-                setShowForm(false);
-            } catch (err) {
-                alert("Failed to save user");
-                console.error(err);
+    const handleSubmit = async () => {
+        try {
+            if (editingUser) {
+            const { name, email, role } = formData;
+            await api.put(`/admin/users/${editingUser.id}`, { name, email, role });
+            setUsers((prev) =>
+                prev.map((u) => (u.id === editingUser.id ? { ...u, name, email, role } : u))
+            );
+            } else {
+            const res = await api.post("/admin/users", formData);
+            setUsers((prev) => [...prev, res.data]);
             }
-            };
+            setShowForm(false);
+        } catch (err) {
+            alert("Failed to save user");
+            console.error(err);
+        }
+        };
 
 
-        const handleDeleteUser = async (userId) => {
-            if (!window.confirm("Are you sure you want to delete this user?")) return;
+    const handleDeleteUser = async (userId) => {
+        if (!window.confirm("Are you sure you want to delete this user?")) return;
 
-            try {
-                await api.delete(`/admin/users/${userId}`);
-                setUsers((prev) => prev.filter((u) => u.id !== userId));
-            } catch (err) {
-                alert("Failed to delete user");
-                console.error(err);
-            }
-            };
+        try {
+            await api.delete(`/admin/users/${userId}`);
+            setUsers((prev) => prev.filter((u) => u.id !== userId));
+        } catch (err) {
+            alert("Failed to delete user");
+            console.error(err);
+        }
+        };
 
     return (
         <div className="admin-dashboard">
