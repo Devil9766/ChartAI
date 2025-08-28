@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Signup.css"
 import SignUpSvg from "../assets/login-svg.svg"
 import { Link, useNavigate } from "react-router-dom";
 import api from "./api";
+import { useAuth } from "./Context/AuthContext";
 
 export default function SignUp(){
     const [data , setData] = useState({
@@ -12,6 +13,7 @@ export default function SignUp(){
        confirmPassword : "",
 
     })
+    const {user } = useAuth();
     const [ error , setError] = useState("");
     const nav = useNavigate();
     const [loading , setLoading]  = useState();
@@ -19,6 +21,15 @@ export default function SignUp(){
         const{name , value} = e.target;
         setData(prev =>({...prev ,[name]: value }));
     }
+
+    useEffect(()=>{
+        if(user && user.role ==="admin"){
+        nav("/admin-dashboard")
+    }
+        if(user && user.role ==="user"){
+            nav("/user-dashboard")
+        }
+    }, [user])
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -54,6 +65,9 @@ export default function SignUp(){
             }
         }
     }
+
+     
+
     return(
     <>
     <section className="signUp">

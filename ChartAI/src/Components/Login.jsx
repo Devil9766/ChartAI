@@ -19,8 +19,17 @@ export default function Login(){
         const{name , value} = e.target;
         setData(prev =>({...prev ,[name]: value }));
     }
-    const { setUser } = useAuth();
+    const { user, setUser } = useAuth();
     
+     useEffect(()=>{
+            if(user && user.role ==="admin"){
+            nav("/admin-dashboard")
+        }
+            if(user && user.role ==="user"){
+                nav("/user-dashboard")
+            }
+        }, [user]);
+
     const togglePassword = ()=>{
         setShowPassword(prev => !prev);
     }
