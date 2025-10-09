@@ -15,6 +15,7 @@
 }
 
 
+
 .navOptions{
     width: 70%;
     display: flex;
@@ -67,6 +68,56 @@
     
 }
 
+#hamburger{
+    visibility: hidden  ;
+    height: 40px;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    transform-origin: 1px;
+    transition: 5s ease-in;
+}
+
+.line-1 , .line-2, .line-3{
+    height: 3px;
+    width: 60px;
+    background-color: rgb(255, 255, 255);
+}
+
+@media(max-width : 900px){
+    .navbar{
+        position: relative;
+    }
+    .navOptions{
+        display: none;
+        position: absolute;
+        top: 110px;
+        right: 0;
+        width: 250px;
+        background-color: rgb(60, 59, 59);
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        padding: 1rem;
+        border: 1px solid #ffffff79;
+        opacity: 1;
+        z-index: 1000;
+        font-size: larger;
+
+    }
+    #hamburger{
+        visibility: visible;
+    }
+
+    .navOptions.visible{
+        display: flex;
+        opacity: 1;
+
+    }
+}
+
 
 @keyframes stickyNav {
     100%{
@@ -77,4 +128,12 @@
     
 }
 
-
+.rotate-up{
+    transform: rotate(45deg) translate(2px , -3px);
+}
+.rotate-down{
+    transform: rotate(-45deg) translate(-6px, 11px) ;
+}
+.fade-out{
+    opacity: 0;
+}

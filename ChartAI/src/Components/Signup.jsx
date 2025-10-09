@@ -14,7 +14,7 @@ export default function SignUp(){
     })
     const [ error , setError] = useState("");
     const nav = useNavigate();
-    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const handleChange =(e)=>{
         const{name , value} = e.target;
         setData(prev =>({...prev ,[name]: value }));
@@ -24,6 +24,9 @@ export default function SignUp(){
         e.preventDefault();
         if(!data.name){
             setError("Fullname  is required");
+        }else if (!emailRegex.test(data.email)) {
+            setError("Please enter a valid email address");
+            return;
         }else if(!data.email){
             setError("Email is required");
         }else if((!data.password)){

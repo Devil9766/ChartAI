@@ -5,6 +5,7 @@ import api from "./api";
 import { useAuth } from "./Context/AuthContext";
 
 export default function Navbar(){
+    const[openHam , setOpenHam] = useState(false);
     const {user , loading, setUser} = useAuth();
     const [userRole , setUserRole] = useState();
     const nav  = useNavigate();
@@ -21,6 +22,9 @@ export default function Navbar(){
             console.log("Logout failed : ",error)
         }
         
+    }
+    const toggleButton = ()=>{
+        setOpenHam(prev => (!prev));
     }
      useEffect(()=>{
         const getRole = async()=>{
@@ -48,7 +52,7 @@ export default function Navbar(){
             <div className="navIcon">
             <Link to="/"><img src="/Images/chartai.png" alt="ChartAI Logo" /></Link>
             </div>
-            <div className="navOptions">
+            <div className={openHam ? "navOptions visible" : "navOptions"}>
             <Link className="link" to="/">Home</Link>
             <Link className="link" to="/docs">Docs</Link>
 
@@ -60,6 +64,12 @@ export default function Navbar(){
             ) : (
                 <Link className="link span" to="/login">Get Started</Link>
             )}
+            
+            </div>
+            <div id="hamburger" onClick={toggleButton}>
+                <div className={openHam ? "line-1 rotate-down" : "line-1"}></div>
+                <div className={openHam ? "line-2 rotate-up" : "line-2"}></div>
+                <div className={openHam ? "line-3 fade-out" : "line-3"}></div>
             </div>
         </div>
         );

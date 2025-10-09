@@ -25,7 +25,12 @@ export default function Login(){
     }
     const handleSubmit = async (e)=>{
         e.preventDefault();
-        if(!data.email){
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            setError("Please enter a valid email address");
+            return;
+        }else if(!data.email){
             setError("email is required");
             return;
         }else if(!data.password){
