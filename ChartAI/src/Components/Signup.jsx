@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Signup.css"
 import SignUpSvg from "../assets/login-svg.svg"
 import { Link, useNavigate } from "react-router-dom";
 import api from "./api";
+import { useAuth } from "./Context/AuthContext";
 
 export default function SignUp(){
     const [data , setData] = useState({
@@ -12,13 +13,26 @@ export default function SignUp(){
        confirmPassword : "",
 
     })
+    const {user } = useAuth();
     const [ error , setError] = useState("");
     const nav = useNavigate();
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const [loading , setLoading]  = useState();
+
     const handleChange =(e)=>{
         const{name , value} = e.target;
         setData(prev =>({...prev ,[name]: value }));
     }
+
+    useEffect(()=>{
+        if(user && user.role ==="admin"){
+        nav("/admin-dashboard")
+    }
+        if(user && user.role ==="user"){
+            nav("/user-dashboard")
+        }
+    }, [user])
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -36,6 +50,7 @@ export default function SignUp(){
         }else{
         
             try {
+                setLoading(true)
                 setError("")
                 const response =await api.post(("/signup") , data);
                 setData({
@@ -45,7 +60,9 @@ export default function SignUp(){
                     confirmPassword: ""
                     });
                 nav("/login");   
+                setLoading(false);
             } catch (error) {
+                setLoading(false)
                 if(error.response?.data?.message){
                     setError(error.response.data.message);
                 }else{
@@ -54,6 +71,9 @@ export default function SignUp(){
             }
         }
     }
+
+     
+
     return(
     <>
     <section className="signUp">
@@ -72,7 +92,7 @@ export default function SignUp(){
                     <input type="password" onChange={handleChange} id="password" name="password" value={data.password}/>
                     <label htmlFor="confirmPassword">Confirm Password</label>
                     <input type="password" onChange={handleChange} id="confirmPassword" name="confirmPassword" value={data.confirmPassword}/>
-                    <input type="submit" value="Submit"/>
+                    <input type="submit" value={loading? "Submitting" : "Submit"}/>
                 </form>
                 <span style={{color: "red"}}>{error}</span>
             </div>

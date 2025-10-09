@@ -11,8 +11,7 @@ import uploadRoute from "./Routes/uploadRoute.js";
 import db from "./db.js";
 import fileHistoryRoute from "./Routes/fileHistoryRoute.js"
 import sheetRoute from "./Routes/SheetRoute.js"; 
-import InsightRoute from "./Routes/InsightRoute.js"
-import isAdmin from "./Middleware/isAdmin.js";
+import InsightRoute from "./Routes/InsightRoute.js";
 import authorizeRoles from "./Middleware/AuthorizeRoles.js";
 const PORT = process.env.PORT;
 const app = express();
