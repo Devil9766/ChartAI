@@ -56,7 +56,7 @@ export default function FileHistory(props){
                 <p className="history-btn" onClick={()=>setShowPopup(true)}>view full history</p>                
             </div>
             {showPopup && (
-                <div className="popup-overlay">
+                <div className="popup-overlay" onClick={()=>setShowPopup(false)}>
                     <div className="popup-content">
                         <h3>Full history :</h3>
                         <div className="full-file-history">
